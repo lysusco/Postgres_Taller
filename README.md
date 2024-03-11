@@ -432,15 +432,37 @@ Resuelva todas las consultas utilizando las cláusulas `LEFT JOIN` y `RIGHT J
 ~~~
 5. Devuelve un listado con el nombre de todos los grados existentes en la base de datos y el número de asignaturas que tiene cada uno. Tenga en cuenta que pueden existir grados que no tienen asignaturas asociadas. Estos grados también tienen que aparecer en el listado. El resultado deberá estar ordenado de mayor a menor por el número de asignaturas.
 ~~~SQL
+  SELECT g.nombre_grado, COUNT(a.id)
+  FROM grado g
+  LEFT JOIN asignatura a ON g.id = a.grado_id
+  GROUP BY g.nombre_grado
+  ORDER BY COUNT(a.id) DESC;
 ~~~
 6. Devuelve un listado con el nombre de todos los grados existentes en la base de datos y el número de asignaturas que tiene cada uno, de los grados que tengan más de `40` asignaturas asociadas.
 ~~~SQL
+  SELECT g.nombre_grado, COUNT(a.id)
+  FROM grado g
+  LEFT JOIN asignatura a ON g.id = a.grado_id
+  GROUP BY g.nombre_grado
+  HAVING COUNT(a.id) > 40
+  ORDER BY COUNT(a.id) DESC;
 ~~~
 7. Devuelve un listado que muestre el nombre de los grados y la suma del número total de créditos que hay para cada tipo de asignatura. El resultado debe tener tres columnas: nombre del grado, tipo de asignatura y la suma de los créditos de todas las asignaturas que hay de ese tipo. Ordene el resultado de mayor a menor por el número total de crédidos.
 ~~~SQL
+  SELECT g.nombre_grado, a.tipos, SUM(a.creditos)
+  FROM grado g
+  INNER JOIN asignatura a ON g.id = a.grado_id
+  GROUP BY g.nombre_grado, a.tipos
+  ORDER BY SUM(a.creditos) DESC;
 ~~~
 8. Devuelve un listado que muestre cuántos alumnos se han matriculado de alguna asignatura en cada uno de los cursos escolares. El resultado deberá mostrar dos columnas, una columna con el año de inicio del curso escolar y otra con el número de alumnos matriculados.
 ~~~SQL
+  SELECT c.anyo_inicio, COUNT(p.id)
+  FROM curso_escolar c
+  INNER JOIN alumno_matricula_asignatura al ON c.id = al.curso_id
+  INNER JOIN persona p ON p.id = al.alumno_id
+  WHERE p.tipo = 'Alumno'
+  GROUP BY c.anyo_inicio;
 ~~~
 9. Devuelve un listado con el número de asignaturas que imparte cada profesor. El listado debe tener en cuenta aquellos profesores que no imparten ninguna asignatura. El resultado mostrará cinco columnas: id, nombre, primer apellido, segundo apellido y número de asignaturas. El resultado estará ordenado de mayor a menor por el número de asignaturas.
 ~~~SQL
